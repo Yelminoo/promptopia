@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-
+import { Suspense } from "react"; // Import NextSuspense
 import Profile from "@components/Profile";
 
 const UserProfile = ({ params }) => {
@@ -31,4 +31,11 @@ const UserProfile = ({ params }) => {
   );
 };
 
-export default UserProfile;
+export default function WrappedUpdateUser() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      {/* Wrap with NextSuspense */}
+      <UserProfile />
+    </Suspense>
+  );
+}

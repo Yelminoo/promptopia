@@ -2,19 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-
+import { Suspense } from "react"; // Import NextSuspense
 import Form from "@components/Form";
 
 const UpdatePrompt = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const promptId = searchParams.get("id");
+  const promptId = router.query.id;
 
   const [post, setPost] = useState({ prompt: "", tag: "" });
   const [submitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const getPromptDetails = async () => {
+      if (!promptId) return;
+
       const response = await fetch(`/api/prompt/${promptId}`);
       const data = await response.json();
 
@@ -24,7 +25,7 @@ const UpdatePrompt = () => {
       });
     };
 
-    if (promptId) getPromptDetails();
+    getPromptDetails();
   }, [promptId]);
 
   const updatePrompt = async (e) => {
@@ -63,4 +64,12 @@ const UpdatePrompt = () => {
   );
 };
 
-export default UpdatePrompt;
+export default function WrappedUpdatePrompt() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      {" "}
+      {/* Wrap with NextSuspense */}
+      <UpdatePrompt />
+    </Suspense>
+  );
+}

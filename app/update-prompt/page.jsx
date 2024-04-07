@@ -7,15 +7,14 @@ import Form from "@components/Form";
 
 const UpdatePrompt = () => {
   const router = useRouter();
-  const promptId = router.query.id;
+  const searchParams = useSearchParams();
+  const promptId = searchParams.get("id");
 
   const [post, setPost] = useState({ prompt: "", tag: "" });
   const [submitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const getPromptDetails = async () => {
-      if (!promptId) return;
-
       const response = await fetch(`/api/prompt/${promptId}`);
       const data = await response.json();
 
@@ -25,7 +24,7 @@ const UpdatePrompt = () => {
       });
     };
 
-    getPromptDetails();
+    if (promptId) getPromptDetails();
   }, [promptId]);
 
   const updatePrompt = async (e) => {
@@ -67,7 +66,6 @@ const UpdatePrompt = () => {
 export default function WrappedUpdatePrompt() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      {" "}
       {/* Wrap with NextSuspense */}
       <UpdatePrompt />
     </Suspense>

@@ -1,25 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useParams } from "next/navigation"; // Import useParams
 import { Suspense } from "react"; // Import NextSuspense
 import Profile from "@components/Profile";
 
-const UserProfile = ({ params }) => {
+const UserProfile = () => {
   const searchParams = useSearchParams();
   const userName = searchParams.get("name");
+
+  const params = useParams(); // Get dynamic route parameters
 
   const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`/api/users/${params?.id}/posts`);
+      const response = await fetch(`/api/users/${params.id}/posts`); // Use params.id directly
       const data = await response.json();
 
       setUserPosts(data);
     };
 
-    if (params?.id) fetchPosts();
+    if (params.id) fetchPosts();
   }, [params.id]);
 
   return (
